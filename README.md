@@ -1,5 +1,7 @@
 # Happy Farmer #
 
+## Вводная часть
+
 ***О скрипте.*** Скрипт создан для абуза @Litecoin_click_bot в Telegram.
 Если приложить немного усилий, его можно адаптировать под работу с 
 @BTC_click_bot, @BCH_click_bot, @Doge_click_bot. Но, как я убедился на
@@ -27,7 +29,13 @@ TRX: TTdXB7RbydKQpxs3wXJx4GBm9r9EqKuBaW
 LTC: Lgp4w1ubkAgcQEVVBSiAN788FUHmZyh5c9  
 Qiwi nickname: MTCHUIKOV
 
----
+## Мануал по работе со скриптом
+
+***Предварительная подготовка.***     
+```Шаг 1.``` Устанавливаем интерпритатор Python.  
+Инструкция по установке Python https://python-scripts.com/install-python  
+```Шаг 2.``` Так же понадобится PIP (python installer packagea).   
+Инструкция по сутановке PIP: https://pythonru.com/baza-znanij/ustanovka-pip-dlja-python-i-bazovye-komandy  
 
 What if there was a common format for the benefit of producers and consumers?
 
