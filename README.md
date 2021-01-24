@@ -31,11 +31,38 @@ Qiwi nickname: MTCHUIKOV
 
 ## Мануал по работе со скриптом
 
-***Предварительная подготовка.***     
-```Шаг 1.``` Устанавливаем интерпритатор Python.  
-Инструкция по установке Python https://python-scripts.com/install-python  
-```Шаг 2.``` Так же понадобится PIP (python installer packagea).   
+***Предварительная подготовка.***
+
+```Шаг 1.``` Устанавливаем интерпретатор Python.  
+Инструкция по установке Python https://python-scripts.com/install-python Запоминаем папку, где находится
+интерпретатор, это пригодится в дальнейшем (по умолчанию Python устанавливается по следующему пути  
+C:\Users\Имя_Пользователя\AppData\Local\Programs\Python\Python39\python.exe).
+
+```Шаг 2.``` Устанавливаем PIP (python installer packagea).   
 Инструкция по сутановке PIP: https://pythonru.com/baza-znanij/ustanovka-pip-dlja-python-i-bazovye-komandy  
+
+```Шаг 3.``` Скачиваем файлы из репозитория.    
+Делается это следующим образом: на странице проекта нажимаем кнопку "Code" => "Download ZIP". Скачанный 
+архив распаковываем в папку.
+
+```Шаг 4.``` Указываем путь до интерпритатора Python в скрипте.  
+Заходим в папку, где находится скаченный проект (для удобства буду называть эту папку folderHappyFarmer).  
+Открываем файл ```start.py```. В верху файла есть строчка код, которая указывает на путь до интерпретатора: ```#!C:\Users\Misha\AppData\Local\Programs\Python\Python39\python.exe```. Нужно удалить всё, до #! и записать
+свой путь.
+
+```Шаг 5.``` Установка пакетов.  
+Нажимаем сочетание клавиш WIN + R, прописываем cmd. Открывается консоль Windows. В консоле прописываем команды:  
+```pip install telethon```  
+```pip install requests```  
+```pip install selenium```    
+```pip install pycoingecko```  
+```pip3 install bs4```  
+```pip3 install lxml```
+
+```Шаг 6.```
+
+
+
 
 What if there was a common format for the benefit of producers and consumers?
 
