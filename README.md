@@ -1,16 +1,6 @@
-# HappyFarmer
-Скрипт предназначен для абуза Telegram-bot'а @Litecoin_click_bot
-***
-<font size="+1">Контакты создателя скрипта:
-Telegram: @mtchuikov
-VK:https://vk.com/mtchuikov
-VK Group: https://vk.com/abuzbi_kak_smbisl_zizni</font>
+##***Happy Farmer
 
-<h4 align="center">
-  <img alt="HappyFarmer" src="common-readme.png">
-</h4>
-
-***Module consumers!*** Frustrated by each module having its own wildly
+***О скрипте.*** Скрипт применяеться для абуза @Litecoin_click_bot в Telegram.
 unique README format? Annoyed by modules that omit critical sections like
 **API** or **Examples**? Stuck scrolling through API docs before you *even know
 what the module does*?
