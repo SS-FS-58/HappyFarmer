@@ -38,17 +38,25 @@ Qiwi nickname: MTCHUIKOV
 интерпретатор, это пригодится в дальнейшем (по умолчанию Python устанавливается по следующему пути  
 C:\Users\Имя_Пользователя\AppData\Local\Programs\Python\Python39\python.exe).
 
+---
+
 ```Шаг 2.``` Устанавливаем PIP (python installer packagea).   
 Инструкция по сутановке PIP: https://pythonru.com/baza-znanij/ustanovka-pip-dlja-python-i-bazovye-komandy  
+
+---
 
 ```Шаг 3.``` Скачиваем файлы из репозитория.    
 Делается это следующим образом: на странице проекта нажимаем кнопку "Code" => "Download ZIP". Скачанный 
 архив распаковываем в папку.
 
+---
+
 ```Шаг 4.``` Указываем путь до интерпритатора Python в скрипте.  
 Заходим в папку, где находится скаченный проект (для удобства буду называть эту папку folderHappyFarmer).  
 Открываем файл ```start.py```. В верху файла есть строчка код, которая указывает на путь до интерпретатора: ```#!C:\Users\Misha\AppData\Local\Programs\Python\Python39\python.exe```. Нужно удалить всё, до #! и записать
 свой путь.
+
+---
 
 ```Шаг 5.``` Установка пакетов.  
 Нажимаем сочетание клавиш WIN + R, прописываем cmd. Открывается консоль Windows. В консоле прописываем команды:  
@@ -59,7 +67,19 @@ C:\Users\Имя_Пользователя\AppData\Local\Programs\Python\Python39\
 ```pip3 install bs4```  
 ```pip3 install lxml```
 
-```Шаг 6.```
+---
+
+```Шаг 6.``` Установка Goolge Chrome и ChromeDriver.    
+Гугл, надеюсь, есть у всех. Но кроме гугла необходим ChromeDriver нужной версии. Скачать его можно по ссылку https://chromedriver.chromium.org/downloads. Что бы узнать нужную версию ChromeDriv: открываем гугл => "Настройки" => "О браузере".
+Запоминаем версию хрома, для такой же версии. Загруженный ChromeDriver кидаем в нашу папочку folderHappyFarmer.
+
+---
+
+```Шаг 6.``` Указываем путь до ChromeDriver в скрипте.  
+С помощью блокнота открываем файл func.py  Ищем строку кода  
+```browserChrome = webdriver.Chrome(r'C:\Users\Misha\Desktop\bot_v2\chromedriver.exe',options=chromeOptions)``` В место  
+```C:\Users\Misha\Desktop\bot_v2\chromedriver.exe``` указываем свой путь до ChromeDriver.
+
 
 
 
