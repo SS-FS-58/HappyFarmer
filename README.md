@@ -77,8 +77,20 @@ C:\Users\Имя_Пользователя\AppData\Local\Programs\Python\Python39\
 
 ```Шаг 6.``` Указываем путь до ChromeDriver в скрипте.  
 С помощью блокнота открываем файл func.py  Ищем строку кода  
-```browserChrome = webdriver.Chrome(r'C:\Users\Misha\Desktop\bot_v2\chromedriver.exe',options=chromeOptions)``` В место  
+```browserChrome = webdriver.Chrome(r'C:\Users\Misha\Desktop\folderHappyFarmer\chromedriver.exe',options=chromeOptions)``` В место  
 ```C:\Users\Misha\Desktop\bot_v2\chromedriver.exe``` указываем свой путь до ChromeDriver.
+
+---
+
+Предварительная подготовка закончена, поздравляю.
+
+***Работа со скриптом.***  
+
+```Шаг 1.``` Запуск скрипта.  
+Делается это через консоль Windows: ```cd C:\Users\Misha\Desktop\folderHappyFarmer\``` (т.е. указываем путь до папки со скриптом).  
+Пишем команду: ```python start.py```. Скрипт запущен.
+
+```Шаг 2.```
 
 
 
