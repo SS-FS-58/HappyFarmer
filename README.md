@@ -5,7 +5,12 @@
 @BTC_click_bot, @BCH_click_bot, @Doge_click_bot. Но, как я убедился на
 практике, это бесполезно. Нормально платят только в @Litecoin_click_bot
 
-Теперь кратко расскажу об архитектуре проекта. Как вы могли заметить
+Теперь немного расскажу об архитектуре проекта. Как вы могли заметить, 
+весь код разбит на несколько файлов: start.py, main.py, func.py
+
+start.py запускает работу скрипта и перезапускает его, если он по
+каким-либо причинам упал. main.py содержит в себе функцию-контроллер
+скрипта.
 
 ***Module authors!*** Tired of making up your readme format every time you
 write it? Do you just want consistent readmes pre-populated with your module's
