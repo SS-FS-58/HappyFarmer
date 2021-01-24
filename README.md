@@ -21,7 +21,7 @@ main.py, func.py```
 замечани по коду? Возникли вопросы? Пишите мне в VK: https://vk.com/mtchuikov
 или Telegram: https://t.me/mtchuikov.
 
-***Поддержать автора***
+***Поддержать автора.***  
 BNB (bep20): 0xa4ca77291e6a7532d527b0d3efbe265ae4eceec0  
 TRX: TTdXB7RbydKQpxs3wXJx4GBm9r9EqKuBaW  
 LTC: Lgp4w1ubkAgcQEVVBSiAN788FUHmZyh5c9  
