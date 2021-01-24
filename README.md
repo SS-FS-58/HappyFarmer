@@ -5,6 +5,8 @@
 @BTC_click_bot, @BCH_click_bot, @Doge_click_bot. Но, как я убедился на
 практике, это бесполезно. Нормально платят только в @Litecoin_click_bot
 
+Теперь кратко расскажу об архитектуре проекта. Как вы могли заметить
+
 ***Module authors!*** Tired of making up your readme format every time you
 write it? Do you just want consistent readmes pre-populated with your module's
 name, description and license without worrying about the structure every time?
