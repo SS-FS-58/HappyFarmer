@@ -1,8 +1,7 @@
-### Happy Farmer ###
+# Happy Farmer #
 
 ***О скрипте.*** Скрипт применяеться для абуза @Litecoin_click_bot в Telegram.
-unique README format? Annoyed by modules that omit critical sections like
-**API** or **Examples**? Stuck scrolling through API docs before you *even know
+
 what the module does*?
 
 ***Module authors!*** Tired of making up your readme format every time you
