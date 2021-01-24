@@ -1,8 +1,9 @@
 # Happy Farmer #
 
-***О скрипте.*** Скрипт применяеться для абуза @Litecoin_click_bot в Telegram.
-
-what the module does*?
+***О скрипте.*** Скрипт создан для абуза @Litecoin_click_bot в Telegram.
+Если приложить немного усилий, его можно адаптировать под работу с 
+@BTC_click_bot, @BCH_click_bot, @Doge_click_bot. Но, как я убедился на
+практике - это бесполезно. Нормально платят только в @Litecoin_click_bot
 
 ***Module authors!*** Tired of making up your readme format every time you
 write it? Do you just want consistent readmes pre-populated with your module's
