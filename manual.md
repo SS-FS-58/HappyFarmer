@@ -18,8 +18,9 @@
 После установки PIP, в консоль Windows необходимо прописать комманды:
 ```pip install telethon```    
 ```pip install requests```    
-```pip install selenium```      
-```pip install pycoingecko```    
+```pip install selenium```  
+```pip install pycoingecko``` 
+```pip install beautifulsoup4```    
 ```pip3 install bs4```    
 ```pip3 install lxml```  
 
