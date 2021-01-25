@@ -11,7 +11,7 @@ if __name__ == "__main__":
                 print(
                     '\nСписок комманд:\n./addData\n./addRefCode\n./updRefCode\n'
                     './addBlockIoApiKey\n./updBlockIoApiKey\n./createSession\n'
-                    './subBot\n./startFarming\n./checkBalance\n./withdrawBalance')
+                    './startLtcBot\n./startFarming\n./checkBalance\n./withdrawBalance')
                 command = input('\nКомманда: ')
                 if command == './addData':
                     def inputData():
@@ -25,12 +25,13 @@ if __name__ == "__main__":
                             if confirm == 'y':
                                 try:
                                     db.cursor.execute(f'''INSERT INTO account_information 
-                                    (PHONE_NUMBER, API_ID, API_HASH) VALUES ("{phoneNumber}", "{apiId}", "{apiHash}")''')
+                                (PHONE_NUMBER, API_ID, API_HASH) VALUES ("{phoneNumber}", "{apiId}", "{apiHash}")''')
                                     db.connection.commit()
                                 except sqlite3.IntegrityError:
                                    print('Этот аккаунт уже добавлен.')
                                 else:
                                     print(f'Аккаунт {phoneNumber} успешно добавлен.')
+                                    inputData()
                             else:
                                 print('\nПопробуйте ещё раз.')
                                 inputData()
@@ -43,7 +44,7 @@ if __name__ == "__main__":
                         LitecoinBot.CreateSession()
                     else:
                         menu()
-                elif command == './startBot':
+                elif command == './startLtcBot':
                     LitecoinBot.StartLitecoinBot()
                 elif command == './addRefCode':
                     refCode = input('\nВведите свой реферальный код: ')
@@ -119,6 +120,11 @@ if __name__ == "__main__":
         ScriptController()
     except sqlite3.OperationalError:
         print('\nПохоже, вы не создали таблицы в базе данных.\nВведите команду ./createDataTable\n')
+
+
+
+
+
 
 
 
