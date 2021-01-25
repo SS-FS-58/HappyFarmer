@@ -36,5 +36,6 @@
 Открываете файл func.py, ищете строку browserChrome = webdriver.Chrome(r'C:\Users\Misha\Desktop\bot_v2\chromedriver.exe',options=chromeOptions). Вместо C:\Users\Misha\Desktop\bot_v2\chromedriver.exe указываете свой путь до ChromeDriver.exe
 
 Предварительная подготовка закончена. 
-
+  
+  
 ***Запуск и работа со скриптом.***
