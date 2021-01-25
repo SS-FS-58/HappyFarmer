@@ -15,6 +15,13 @@
 
 ```Шаг 3.```  
 Установка PIP (python installer package). Инструкция по установке PIP: https://pythonru.com/baza-znanij/ustanovka-pip-dlja-python-i-bazovye-komandy  
+После установки PIP, в консоль Windows необходимо прописать комманды:
+```pip install telethon```    
+```pip install requests```    
+```pip install selenium```      
+```pip install pycoingecko```    
+```pip3 install bs4```    
+```pip3 install lxml```  
 
 ---
 
