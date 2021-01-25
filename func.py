@@ -19,7 +19,7 @@ from telethon import  functions
 from telethon.tl.functions.messages import GetBotCallbackAnswerRequest, StartBotRequest
 from telethon.tl.functions.channels import JoinChannelRequest, LeaveChannelRequest
 from telethon.errors.rpcerrorlist import PhoneCodeInvalidError, FloodWaitError, UserDeactivatedBanError, \
-    StartParamInvalidError, UserNotParticipantError
+    StartParamInvalidError, UserNotParticipantError, PeerIdInvalidError
 from telethon.sessions import StringSession
 
 logging.basicConfig(filename="TelegramFarmErrors.log", level=logging.ERROR)
@@ -27,7 +27,6 @@ logging.basicConfig(filename="TelegramFarmErrors.log", level=logging.ERROR)
 logging.getLogger('urllib3').setLevel('CRITICAL')
 logging.getLogger('telethon').setLevel('CRITICAL')
 logging.getLogger('selenium').setLevel('CRITICAL')
-
 
 class SQLite:
 
@@ -75,7 +74,6 @@ db.createTableAccountInformation()
 db.createTableBotBlacklist()
 db.createTableChannelInfo()
 db.createTableSettings()
-
 
 class LitecoinBot:
 
@@ -157,14 +155,15 @@ class LitecoinBot:
             try:
                 try:
                     clientTelegram(functions.messages.StartBotRequest(
-                        bot='a',
+                        bot='Litecoin_click_bot',
                         peer='https://t.me/Litecoin_click_bot',
                         start_param=str(
-                            db.cursor.execute('''SELECT REFFERAL_CODE FROM settings WHERE ID = 1''').fetchone()[1])))
-                    print(f'Аккаунт {phoneNumber} подписан на @Litecoin_click_bot.')
+                            db.cursor.execute('''SELECT REFFERAL_CODE FROM settings WHERE ID = 1''').fetchone()[0])))
+                    print(f'\nАккаунт {phoneNumber} подписан на @Litecoin_click_bot.')
                     print('================================================================================')
                 except:
-                    print('\nДобавьте реферальный код.')
+                    print('\nДобавьте реферальный код. Выполните комманду ./addRefCode')
+                    break
                 clientTelegram.disconnect()
             except UserDeactivatedBanError:
                 print(f'ВНИМАНИЕ! Аккаунт {phoneNumber} забанен. Удаляем данные об аккаунте из базы.\n'
@@ -252,6 +251,10 @@ class LitecoinBot:
                 logging.error('================================================================================')
                 db.cursor.execute(f'DELETE FROM account_information WHERE PHONE_NUMBER = {phoneNumber}')
                 db.connection.commit()
+            except PeerIdInvalidError:
+                print(f'@Litecoin_click_bot на запущен на аккаунте {phoneNumber}. '
+                      f'Выполните комманду ./startLtcBot')
+                break
 
     @staticmethod
     def SubscribeBot():
@@ -382,6 +385,10 @@ class LitecoinBot:
                 logging.error('================================================================================')
                 db.cursor.execute(f'DELETE FROM account_information WHERE PHONE_NUMBER = {phoneNumber}')
                 db.connection.commit()
+            except PeerIdInvalidError:
+                print(f'@Litecoin_click_bot на запущен на аккаунте {phoneNumber}. '
+                      f'Выполните комманду ./startLtcBot')
+                break
 
     @staticmethod
     def JoinChannel():
@@ -524,6 +531,10 @@ class LitecoinBot:
                 db.cursor.execute(f'DELETE FROM account_information WHERE PHONE_NUMBER = {phoneNumber}')
                 db.connection.commit()
                 x += 1
+            except PeerIdInvalidError:
+                print(f'@Litecoin_click_bot на запущен на аккаунте {phoneNumber}. '
+                      f'Выполните комманду ./startLtcBot')
+                break
 
     @staticmethod
     def TimeToExit():
@@ -609,6 +620,10 @@ class LitecoinBot:
                 logging.error('================================================================================')
                 db.cursor.execute(f'DELETE FROM account_information WHERE PHONE_NUMBER = {phoneNumber}')
                 db.connection.commit()
+            except PeerIdInvalidError:
+                print(f'@Litecoin_click_bot на запущен на аккаунте {phoneNumber}. '
+                      f'Выполните комманду ./startLtcBot')
+                break
 
     @staticmethod
     def WithdrawBalance():
@@ -664,6 +679,11 @@ class LitecoinBot:
                 logging.error('================================================================================')
                 db.cursor.execute(f'DELETE FROM account_information WHERE PHONE_NUMBER = {phoneNumber}')
                 db.connection.commit()
+            except PeerIdInvalidError:
+                print(f'@Litecoin_click_bot на запущен на аккаунте {phoneNumber}. '
+                      f'Выполните комманду ./startLtcBot')
+                break
+
 
 
 
