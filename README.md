@@ -40,7 +40,6 @@ LTC: Lgp4w1ubkAgcQEVVBSiAN788FUHmZyh5c9
 Qiwi nickname: MTCHUIKOV
 
 ## Мануал по работе со скриптом
----
 
 ***Предварительная подготовка.***
 
