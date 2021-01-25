@@ -8,8 +8,9 @@ if __name__ == "__main__":
         def ScriptController():
             def menu():
                 print(
-                    '\nГлавное меню.\nВведите комманду:\n./addData\n./createSession\n'
-                    './settings\n./subBot\n./startFarming\n./checkBalance\n./withdrawBalance')
+                    '\nСписок комманд:\n./addData\n./addRefCode\n./updRefCode\n'
+                    './addBlockIoApiKey\n./updBlockIoApiKey\n./createSession\n'
+                    './subBot\n./startFarming\n./checkBalance\n./withdrawBalance')
                 command = input('\nКомманда: ')
                 if command == './addData':
                     def inputData():
@@ -30,7 +31,7 @@ if __name__ == "__main__":
                                 else:
                                     print(f'Аккаунт {phoneNumber} успешно добавлен.')
                             else:
-                                print('Попробуйте ещё раз.')
+                                print('\nПопробуйте ещё раз.')
                                 inputData()
                         else:
                             menu()
@@ -41,73 +42,62 @@ if __name__ == "__main__":
                         LitecoinBot.CreateSession()
                     else:
                         menu()
-                elif command == './subBot':
+                elif command == './startBot':
                     LitecoinBot.StartLitecoinBot()
-                elif command == './settings':
-                    def settings():
-                        print('\nРаздел настройки.\nВведите комманду:\n./addRefCode\n./updRefCode\n./addBlockIoApiKey\n'
-                              './updBlockIoApiKey\n./back\n')
-                        command_ = input('Комманда: ')
-                        if command_ == './addRefCode':
-                            refCode = input('\nВведите свой реферальный код: ')
-                            confirmInput = input('\nПодтвердить ввод y/n: ')
-                            if confirmInput == 'y':
-                                db.cursor.execute(f'''INSERT INTO settings (REFFERAL_CODE) VALUES ("{refCode}")''')
-                                db.connection.commit()
-                                print('Реферальный код успешно добавлен.\n')
-                            else:
-                                settings()
-                        elif command_ == './updRefCode':
-                            try:
-                                db.cursor.execute(f'''SELECT * FROM settings WHERE ID = 1''').fetchone()[2]
-                            except:
-                                print('\nРеферальный код не найден. Добавьте введите реферальный код.')
-                                settings()
-                            else:
-                                refCode = input('\nВведите свой реферальный код: ')
-                                confirmInput = input('\nПодтвердить ввод y/n: ')
-                                if confirmInput == 'y':
-                                    db.cursor.execute(
-                                        f'''UPDATE settings SET REFFERAL_CODE = "{refCode}" WHERE ID = 1''')
-                                    db.connection.commit()
-                                    print('Реферальный код успешно обновлён.')
-                                else:
-                                    settings()
-                            print('Реферальный код обновлён.\n')
-                        elif command_ == './addBlockIoApiKey':
-                            blockIoApiKey = input(
-                                '\nВведите Api ключ для Litecoin кошелька с сайта https://block.io/: ')
-                            confirmInput = input('\nПодтвердить ввод y/n: ')
-                            if confirmInput == 'y':
-                                db.cursor.execute(
-                                    f'''INSERT INTO settings (BLOCKIO_API_KEY) VALUES ("{blockIoApiKey}")''')
-                                db.connection.commit()
-                                print('Api ключ успешно добавлен.')
-                            else:
-                                settings()
-                        elif command_ == './updBlockIoApiKey':
-                            try:
-                                db.cursor.execute(f'''SELECT * FROM settings WHERE ID = 1''').fetchone()[2]
-                            except:
-                                print('\nApi ключ для Litecoin кошелька не найден. Введите Api ключ.')
-                                settings()
-                            else:
-                                blockIoApiKey = input(
-                                    '\nВведите Api ключ для Litecoin кошелька с сайта https://block.io/: ')
-                                confirmInput = input('\nПодтвердить ввод y/n: ')
-                                if confirmInput == 'y':
-                                    db.cursor.execute(
-                                        f'''UPDATE settings SET BLOCKIO_API_KEY = "{blockIoApiKey}" WHERE ID = 1''')
-                                    db.connection.commit()
-                                    print('Api ключ успешно обновлён.')
-                                else:
-                                    settings()
-                        elif command_ == './back':
-                            menu()
+                elif command == './addRefCode':
+                    refCode = input('\nВведите свой реферальный код: ')
+                    confirmInput = input('\nПодтвердить ввод y/n: ')
+                    if confirmInput == 'y':
+                        db.cursor.execute(f'''INSERT INTO settings (REFFERAL_CODE) VALUES ("{refCode}")''')
+                        db.connection.commit()
+                        print('Реферальный код успешно добавлен.\n')
+                    else:
+                        menu()
+                elif command == './updRefCode':
+                    try:
+                        db.cursor.execute(f'''SELECT * FROM settings WHERE ID = 1''').fetchone()[2]
+                    except:
+                        print('\nРеферальный код не найден. Добавьте введите реферальный код.')
+                        menu()
+                    else:
+                        refCode = input('\nВведите свой реферальный код: ')
+                        confirmInput = input('\nПодтвердить ввод y/n: ')
+                        if confirmInput == 'y':
+                            db.cursor.execute(
+                                f'''UPDATE settings SET REFFERAL_CODE = "{refCode}" WHERE ID = 1''')
+                            db.connection.commit()
+                            print('Реферальный код успешно обновлён.')
                         else:
-                            print('\nКомманда не распознана.')
-                            settings()
-                    settings()
+                            menu()
+                    print('Реферальный код обновлён.\n')
+                elif command == './addBlockIoApiKey':
+                    blockIoApiKey = input(
+                        '\nВведите Api ключ для Litecoin кошелька с сайта https://block.io/: ')
+                    confirmInput = input('\nПодтвердить ввод y/n: ')
+                    if confirmInput == 'y':
+                        db.cursor.execute(
+                            f'''INSERT INTO settings (BLOCKIO_API_KEY) VALUES ("{blockIoApiKey}")''')
+                        db.connection.commit()
+                        print('Api ключ успешно добавлен.')
+                    else:
+                        menu()
+                elif command == './updBlockIoApiKey':
+                    try:
+                        db.cursor.execute(f'''SELECT * FROM settings WHERE ID = 1''').fetchone()[2]
+                    except:
+                        print('\nApi ключ для Litecoin кошелька не найден. Введите Api ключ.')
+                        menu()
+                    else:
+                        blockIoApiKey = input(
+                            '\nВведите Api ключ для Litecoin кошелька с сайта https://block.io/: ')
+                        confirmInput = input('\nПодтвердить ввод y/n: ')
+                        if confirmInput == 'y':
+                            db.cursor.execute(
+                                f'''UPDATE settings SET BLOCKIO_API_KEY = "{blockIoApiKey}" WHERE ID = 1''')
+                            db.connection.commit()
+                            print('Api ключ успешно обновлён.')
+                        else:
+                            menu()
                 elif command == './startFarming':
                     print('\nФерма запущена.\n'
                           '================================================================================')
