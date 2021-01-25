@@ -1,5 +1,5 @@
-# coding: utf8
 #!C:\Users\Misha\AppData\Local\Programs\Python\Python39\python.exe
+# coding: utf8
 
 import subprocess, sys
 
