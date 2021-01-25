@@ -82,21 +82,15 @@ class LitecoinBot:
     @staticmethod
     def CreateSession():
         x = 1
-        while True:
-            try:
-                phoneNumber = db.selectAccount(x)[1];apiId = db.selectAccount(x)[2]
-                apiHash = db.selectAccount(x)[3]; stringSession = db.selectAccount(x)[4]
-            except:
-                break
+        for accountInformation in db.cursor.execute(
+                f'SELECT PHONE_NUMBER, API_ID, API_HASH, STRING_SESSION FROM account_information').fetchall():
+            phoneNumber = accountInformation[0]; apiId = accountInformation[1]
+            apiHash = accountInformation[2]; stringSession = accountInformation[3]
             clientTelegram = TelegramClient(StringSession(stringSession), apiId, apiHash)
             clientTelegram.connect()
             try:
                 if clientTelegram.is_user_authorized():
-                    print(f'\nВход в аккаунт {phoneNumber} уже выполнен.')
-                    print('================================================================================')
-                    clientTelegram.disconnect()
                     x += 1
-                    break
                 else:
                     while True:
                         clientTelegram.send_code_request(phoneNumber)
@@ -110,19 +104,25 @@ class LitecoinBot:
                         stringSession = StringSession.save(clientTelegram.session)
                         userIdStr = str(clientTelegram.get_me('id')); templateSearch = re.compile(r'\d.\d{1,12}')
                         findUserId = templateSearch.search(userIdStr); userId = findUserId.group()
-                        blockIoApiKey = db.cursor.execute('''SELECT BLOCKIO_API_KEY FROM settings''').fetchone()
+                        blockIoApiKey = db.cursor.execute(
+                            '''SELECT BLOCKIO_API_KEY FROM settings WHERE ID = 1''').fetchone()[0]
                         requestsGetToBlockIo = requests.get(
                             f'https://block.io/api/v2/get_new_address/?api_key={blockIoApiKey}')
                         answerJsonFromBlockIo = json.loads(requestsGetToBlockIo.text)
-                        addressLiteCoin = answerJsonFromBlockIo['data']['address']
-                        db.cursor.execute(f'UPDATE account_information SET STRING_SESSION = "{stringSession}", '
+                        try:
+                            addressLiteCoin = answerJsonFromBlockIo['data']['address']
+                            db.cursor.execute(f'UPDATE account_information SET STRING_SESSION = "{stringSession}", '
                                           f'ACCOUNT_ID = "{userId}", ADDRESS = "{addressLiteCoin}" WHERE ID = "{x}"')
-                        db.connection.commit()
-                        clientTelegram.disconnect()
-                        x += 1
-                        print(f'Вход в аккаунт {phoneNumber} выполнен успешно.')
-                        print(
-                            '================================================================================')
+                            db.connection.commit()
+                            clientTelegram.disconnect()
+                            print(f'Вход в аккаунт {phoneNumber} выполнен успешно.')
+                            print(
+                                '================================================================================')
+                            x += 1
+                            break
+                        except KeyError:
+                            print('Добавьте Api ключ с сайта https://block.io/')
+                            break
             except UserDeactivatedBanError:
                 print(f'Аккаунт {phoneNumber} забанен. Удаляем данные об аккаунте из базы.\n'
                       f'================================================================================')
@@ -130,6 +130,7 @@ class LitecoinBot:
                 logging.error('================================================================================')
                 db.cursor.execute(f'DELETE FROM account_information WHERE PHONE_NUMBER = {phoneNumber}')
                 db.connection.commit()
+        print('\nСессии для всех аккаунтов созданы успешно.')
 
     @staticmethod
     def TryLogIn():
@@ -663,5 +664,8 @@ class LitecoinBot:
                 logging.error('================================================================================')
                 db.cursor.execute(f'DELETE FROM account_information WHERE PHONE_NUMBER = {phoneNumber}')
                 db.connection.commit()
+
+
+
 
 
