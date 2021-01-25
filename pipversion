@@ -1,0 +1,6 @@
+Telethon==1.18.2
+pycoingecko==1.4.0
+beautifulsoup4==4.9.3
+lxml==4.6.2
+selenium==3.141.0
+requests==2.25.1
