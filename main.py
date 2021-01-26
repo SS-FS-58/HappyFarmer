@@ -109,8 +109,6 @@ if __name__ == "__main__":
                     LitecoinBot.CheckBalance()
                 elif command == './withdrawBalance':
                     LitecoinBot.WithdrawBalance()
-                elif command == 'test':
-                    LitecoinBot.test()
                 else:
                     print('\nКомманда не распознана.')
                     menu()
