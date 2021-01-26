@@ -5,7 +5,6 @@ from func import *
 
 if __name__ == "__main__":
 
-    try:
         def ScriptController():
             def menu():
                 print(
@@ -114,8 +113,7 @@ if __name__ == "__main__":
                     menu()
             menu()
         ScriptController()
-    except sqlite3.OperationalError:
-        print('\nПохоже, вы не создали таблицы в базе данных.\nВведите команду ./createDataTable\n')
+
 
 
 
