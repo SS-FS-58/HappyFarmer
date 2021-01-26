@@ -9,9 +9,8 @@ if __name__ == "__main__":
         def ScriptController():
             def menu():
                 print(
-                    '\nСписок комманд:\n./addData\n./addRefCode\n./updRefCode\n'
-                    './addBlockIoApiKey\n./updBlockIoApiKey\n./createSession\n'
-                    './startLtcBot\n./startFarming\n./checkBalance\n./withdrawBalance')
+                    '\nСписок комманд:\n./addData\n./addRefCodeAndApiKey\n./updRefCode\n'
+                    './updApiKey\n./createSession\n./startLtcBot\n./startFarming\n./checkBalance\n./withdrawBalance')
                 command = input('\nКомманда: ')
                 if command == './addData':
                     def inputData():
@@ -29,6 +28,7 @@ if __name__ == "__main__":
                                     db.connection.commit()
                                 except sqlite3.IntegrityError:
                                    print('Этот аккаунт уже добавлен.')
+                                   inputData()
                                 else:
                                     print(f'Аккаунт {phoneNumber} успешно добавлен.')
                                     inputData()
@@ -46,20 +46,30 @@ if __name__ == "__main__":
                         menu()
                 elif command == './startLtcBot':
                     LitecoinBot.StartLitecoinBot()
-                elif command == './addRefCode':
-                    refCode = input('\nВведите свой реферальный код: ')
-                    confirmInput = input('\nПодтвердить ввод y/n: ')
-                    if confirmInput == 'y':
-                        db.cursor.execute(f'''INSERT INTO settings (REFFERAL_CODE) VALUES ("{refCode}")''')
-                        db.connection.commit()
-                        print('Реферальный код успешно добавлен.\n')
+                elif command == './addRefCodeAndApiKey':
+                    if db.cursor.execute('''SELECT ID FROM settings WHERE ID = 1''').fetchone() is None:
+                        if input('\nНачать ввод данных: y/n: ') == 'y':
+                            refCode = input('\nВведите свой реферальный код: ')
+                            blockIoApiKey = input('Введите Api ключ для Litecoin кошелька с сайта https://block.io/: ')
+                            print(f'\nРеферальный код: {refCode}\nApi ключ: {blockIoApiKey}')
+                            confirmInput = input('\nПодтвердить ввод y/n: ')
+                            if confirmInput == 'y':
+                                db.cursor.execute(
+                                    f'''INSERT INTO settings
+                                     (REFFERAL_CODE, BLOCKIO_API_KEY) VALUES ("{refCode}", "{blockIoApiKey}")''')
+                                db.connection.commit()
+                                print('\nApi ключ и реферальный код успешно добавлены.')
+                            else:
+                                menu()
+                        else:
+                            menu()
                     else:
+                        print('\nВы уже добавили реферальный код и Api ключ. Воспользуйтесь коммандами\n./updRefCode'
+                              ' и ./updBlockIoApiKey для их обновления.')
                         menu()
                 elif command == './updRefCode':
-                    try:
-                        db.cursor.execute(f'''SELECT * FROM settings WHERE ID = 1''').fetchone()[2]
-                    except:
-                        print('\nРеферальный код не найден. Добавьте введите реферальный код.')
+                    if db.cursor.execute(f'''SELECT ID FROM settings WHERE ID = 1''').fetchone() is None:
+                        print('\nРеферальный код не найден. Выполните комманду ./addRefCodeAndApiKey')
                         menu()
                     else:
                         refCode = input('\nВведите свой реферальный код: ')
@@ -68,26 +78,12 @@ if __name__ == "__main__":
                             db.cursor.execute(
                                 f'''UPDATE settings SET REFFERAL_CODE = "{refCode}" WHERE ID = 1''')
                             db.connection.commit()
-                            print('Реферальный код успешно обновлён.')
+                            print('\nРеферальный код успешно обновлён.')
                         else:
                             menu()
-                    print('Реферальный код обновлён.\n')
-                elif command == './addBlockIoApiKey':
-                    blockIoApiKey = input(
-                        '\nВведите Api ключ для Litecoin кошелька с сайта https://block.io/: ')
-                    confirmInput = input('\nПодтвердить ввод y/n: ')
-                    if confirmInput == 'y':
-                        db.cursor.execute(
-                            f'''INSERT INTO settings (BLOCKIO_API_KEY) VALUES ("{blockIoApiKey}")''')
-                        db.connection.commit()
-                        print('Api ключ успешно добавлен.')
-                    else:
-                        menu()
-                elif command == './updBlockIoApiKey':
-                    try:
-                        db.cursor.execute(f'''SELECT * FROM settings WHERE ID = 1''').fetchone()[2]
-                    except:
-                        print('\nApi ключ для Litecoin кошелька не найден. Введите Api ключ.')
+                elif command == './updApiKey':
+                    if db.cursor.execute(f'''SELECT ID FROM settings WHERE ID = 1''').fetchone() is None:
+                        print('\nApi ключ для не найден. Выполните комманду ./addRefCodeAndApiKey')
                         menu()
                     else:
                         blockIoApiKey = input(
@@ -97,7 +93,7 @@ if __name__ == "__main__":
                             db.cursor.execute(
                                 f'''UPDATE settings SET BLOCKIO_API_KEY = "{blockIoApiKey}" WHERE ID = 1''')
                             db.connection.commit()
-                            print('Api ключ успешно обновлён.')
+                            print('\nApi ключ успешно обновлён.')
                         else:
                             menu()
                 elif command == './startFarming':
@@ -113,6 +109,8 @@ if __name__ == "__main__":
                     LitecoinBot.CheckBalance()
                 elif command == './withdrawBalance':
                     LitecoinBot.WithdrawBalance()
+                elif command == 'test':
+                    LitecoinBot.test()
                 else:
                     print('\nКомманда не распознана.')
                     menu()
@@ -120,6 +118,10 @@ if __name__ == "__main__":
         ScriptController()
     except sqlite3.OperationalError:
         print('\nПохоже, вы не создали таблицы в базе данных.\nВведите команду ./createDataTable\n')
+
+
+
+
 
 
 
