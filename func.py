@@ -22,7 +22,7 @@ from telethon.errors.rpcerrorlist import PhoneCodeInvalidError, FloodWaitError, 
     StartParamInvalidError, UserNotParticipantError, PeerIdInvalidError, UsernameNotOccupiedError
 from telethon.sessions import StringSession
 
-waitTime = 2
+waitTime = 1
 
 logging.basicConfig(filename="TelegramFarmErrors.log", level=logging.ERROR)
 
@@ -185,15 +185,10 @@ class LitecoinBot:
 
     @staticmethod
     def VisitSites():
-        x = 1
-        while True:
-            try:
-                phoneNumber = db.selectAccount(x)[1];apiId = db.selectAccount(x)[2]
-                apiHash = db.selectAccount(x)[3]; stringSession = db.selectAccount(x)[4]
-            except:
-                print(f'[{datetime.datetime.now().strftime("%H:%M:%S")}] Посещение сайтов - круг пройден.')
-                print('================================================================================')
-                break
+        for accountInformation in db.cursor.execute(
+                f'SELECT PHONE_NUMBER, API_ID, API_HASH, STRING_SESSION FROM account_information').fetchall():
+            phoneNumber = accountInformation[0];apiId = accountInformation[1]
+            apiHash = accountInformation[2];stringSession = accountInformation[3]
             clientTelegram = TelegramClient(StringSession(stringSession), apiId, apiHash)
             clientTelegram.connect()
             print(f'[{datetime.datetime.now().strftime("%H:%M:%S")}] '
@@ -206,11 +201,9 @@ class LitecoinBot:
                         break
                 try:
                     clientTelegram.send_message(LTC, '/visit')
-                except PeerIdInvalidError:
-                    print(
-                        f'[{datetime.datetime.now().strftime("%H:%M:%S")}] '
-                        f'@Litecoin_click_bot на запущен на аккаунте {phoneNumber}. '
-                        f'Выполните комманду ./startLtcBot')
+                except UnboundLocalError:
+                    print(f'[{datetime.datetime.now().strftime("%H:%M:%S")}] Проверьте, выполнили ли вы комманду'
+                          f'./startLtcBot')
                     break
                 while True:
                     time.sleep(waitTime)
@@ -222,8 +215,16 @@ class LitecoinBot:
                               f'Для аккаунта {phoneNumber} нет доступных заданий по посещению сайтов. '
                               f'Переходим на другой аккаунт.')
                         print('================================================================================')
-                        x += 1
                         break
+                    elif 'In the past hour, you earned' in getMessage[0].message:
+                        clientTelegram.send_message(LTC, '/visit')
+                        time.sleep(waitTime)
+                    elif 'There is a new /join' in getMessage[0].message:
+                        clientTelegram.send_message(LTC, '/visit')
+                        time.sleep(waitTime)
+                    elif 'There is a new /bot for you to message! 🤖' in getMessage[0].message:
+                        clientTelegram.send_message(LTC, '/visit')
+                        time.sleep(waitTime)
                     elif 'Press the "Visit website"' in getMessage[0].message:
                         time.sleep(waitTime)
                         url = getMessage[0].reply_markup.rows[0].buttons[0].url
@@ -244,15 +245,19 @@ class LitecoinBot:
                             time.sleep(waitTime)
                             clientTelegram.send_message(LTC, '/visit')
                             while True:
-                                time.sleep(waitTime)
-                                getMessage = clientTelegram.get_messages(LTC, limit=3)
-                                if 'Press the "Visit website" button to earn LTC' in getMessage[0].message:
+                                try:
                                     time.sleep(waitTime)
-                                    buttons = getMessage[0].reply_markup.rows[1].buttons[1].data
-                                    messageId = getMessage[0].id
+                                    getMessage = clientTelegram.get_messages(LTC, limit=3)
+                                    if 'Press the "Visit website" button to earn LTC' in getMessage[0].message:
+                                        time.sleep(waitTime)
+                                        buttons = getMessage[0].reply_markup.rows[1].buttons[1].data
+                                        messageId = getMessage[0].id
+                                        time.sleep(waitTime)
+                                        clientTelegram(GetBotCallbackAnswerRequest(LTC, messageId, data=buttons))
+                                        break
+                                except AttributeError:
+                                    clientTelegram.send_message(LTC, '/visit')
                                     time.sleep(waitTime)
-                                    clientTelegram(GetBotCallbackAnswerRequest(LTC, messageId, data=buttons))
-                                    break
                             break
                         while True:
                             time.sleep(waitTime)
@@ -262,7 +267,6 @@ class LitecoinBot:
                                 print(f'[{datetime.datetime.now().strftime("%H:%M:%S")}] '
                                       f'Получили награду на аккаунте {phoneNumber} за посещение сайта.')
                                 print('================================================================================')
-                                x += 1
                                 break
                         break
             except UserDeactivatedBanError:
@@ -279,19 +283,17 @@ class LitecoinBot:
                       f' @Litecoin_click_bot на запущен на аккаунте {phoneNumber}. '
                       f'Выполните комманду ./startLtcBot')
                 break
+        print(f'[{datetime.datetime.now().strftime("%H:%M:%S")}] Посещение сайтов - круг пройден.')
+        print('================================================================================')
 
     @staticmethod
     def SubscribeBot():
-        x, y = 1, 0
-        while True:
-            try:
-                phoneNumber = db.selectAccount(x)[1];apiId = db.selectAccount(x)[2]
-                apiHash = db.selectAccount(x)[3]; stringSession = db.selectAccount(x)[4]
-                accountId = db.selectAccount(x)[5]
-            except:
-                print(f'[{datetime.datetime.now().strftime("%H:%M:%S")}] Запуск ботов - круг пройден.')
-                print('================================================================================')
-                break
+        y = 0
+        for accountInformation in db.cursor.execute(
+                f'SELECT PHONE_NUMBER, API_ID, API_HASH, STRING_SESSION, ACCOUNT_ID FROM account_information').fetchall():
+            phoneNumber = accountInformation[0];apiId = accountInformation[1]
+            apiHash = accountInformation[2];stringSession = accountInformation[3]
+            accountId = accountInformation[4]
             clientTelegram = TelegramClient(StringSession(stringSession), apiId, apiHash)
             clientTelegram.connect()
             if y == 0:
@@ -306,11 +308,9 @@ class LitecoinBot:
                         break
                 try:
                     clientTelegram.send_message(LTC, '/bots')
-                except PeerIdInvalidError:
-                    print(
-                        f'[{datetime.datetime.now().strftime("%H:%M:%S")}] '
-                        f'@Litecoin_click_bot на запущен на аккаунте {phoneNumber}. '
-                        f'Выполните комманду ./startLtcBot')
+                except UnboundLocalError:
+                    print(f'[{datetime.datetime.now().strftime("%H:%M:%S")}] Проверьте, выполнили ли вы комманду'
+                          f'./startLtcBot')
                     break
                 while True:
                     time.sleep(waitTime)
@@ -322,34 +322,46 @@ class LitecoinBot:
                                f'Для аккаунта {phoneNumber} нет доступных заданий по запуску ботов'
                                f'. Переходим на другой аккаунт.')
                         print('================================================================================')
-                        x += 1
                         y = 0
                         break
+                    elif 'In the past hour, you earned' in getMessage[0].message:
+                        clientTelegram.send_message(LTC, '/bots')
+                        time.sleep(waitTime)
+                    elif 'There is a new /join' in getMessage[0].message:
+                        clientTelegram.send_message(LTC, '/bots')
+                        time.sleep(waitTime)
+                    elif 'There is a new site for you to /visit! 🖥' in getMessage[0].message:
+                        clientTelegram.send_message(LTC, '/bots')
+                        time.sleep(waitTime)
                     elif 'Press the "Message bot" botton below' in getMessage[0].message:
                         time.sleep(waitTime)
                         url = getMessage[0].reply_markup.rows[0].buttons[0].url
                         try:
                             requestsPost = requests.post(url)
                         except TimeoutError:
-                            time.sleep(waitTime)
                             clientTelegram.send_message(LTC, '/bots')
+                            time.sleep(waitTime)
                             while True:
-                                getMessage = clientTelegram.get_messages(LTC, limit=3)
-                                if 'Press the "Message bot" botton below' in getMessage[0].message:
-                                    buttons = getMessage[0].reply_markup.rows[1].buttons[1].data
-                                    messageId = getMessage[0].id
-                                    clientTelegram(GetBotCallbackAnswerRequest(LTC, messageId, data=buttons))
-                                    break
+                                try:
+                                    time.sleep(waitTime)
+                                    getMessage = clientTelegram.get_messages(LTC, limit=3)
+                                    if 'Press the "Message bot" botton below' in getMessage[0].message:
+                                        buttons = getMessage[0].reply_markup.rows[1].buttons[1].data
+                                        messageId = getMessage[0].id
+                                        clientTelegram(GetBotCallbackAnswerRequest(LTC, messageId, data=buttons))
+                                        break
+                                except AttributeError:
+                                    clientTelegram.send_message(LTC, '/bots')
+                                    time.sleep(waitTime)
                                 break
                         beautifulSoup = bs4.BeautifulSoup(requestsPost.text, 'lxml')
                         tgLink = beautifulSoup.find(attrs={'name':'twitter:app:url:googleplay'}).get('content')
+                        blackList = False
                         for i in db.cursor.execute('SELECT URL FROM bot_blacklist'):
                             urlBlackList = str(i[0])
                             if tgLink in urlBlackList:
                                 blackList = True
                                 break
-                            else:
-                                blackList = False
                         if blackList is True:
                             time.sleep(waitTime)
                             getMessage = clientTelegram.get_messages(LTC, limit=3)
@@ -363,67 +375,79 @@ class LitecoinBot:
                                 botName = beautifulSoup.find(class_='tgme_page_extra').get_text(strip=True)
                                 botTitle = beautifulSoup.find(attrs={'property':'og:title'}).get('content')
                             except AttributeError:
-                                time.sleep(waitTime)
                                 clientTelegram.send_message(LTC, '/bots')
+                                time.sleep(waitTime)
                                 while True:
-                                    getMessage = clientTelegram.get_messages(LTC, limit=3)
-                                    if 'Press the "Message bot" botton below' in getMessage[0].message:
-                                        buttons = getMessage[0].reply_markup.rows[1].buttons[1].data
-                                        messageId = getMessage[0].id
-                                        clientTelegram(GetBotCallbackAnswerRequest(LTC, messageId, data=buttons))
-                                        break
+                                    try:
+                                        time.sleep(waitTime)
+                                        getMessage = clientTelegram.get_messages(LTC, limit=3)
+                                        if 'Press the "Message bot" botton below' in getMessage[0].message:
+                                            buttons = getMessage[0].reply_markup.rows[1].buttons[1].data
+                                            messageId = getMessage[0].id
+                                            clientTelegram(GetBotCallbackAnswerRequest(LTC, messageId, data=buttons))
+                                            break
+                                    except AttributeError:
+                                        clientTelegram.send_message(LTC, '/bots')
+                                        time.sleep(waitTime)
                             try:
                                 time.sleep(waitTime)
                                 clientTelegram(StartBotRequest(bot=botName, peer=tgLink, start_param='0'))
                             except:
-                                time.sleep(waitTime)
                                 clientTelegram.send_message(LTC, '/bots')
+                                time.sleep(waitTime)
                                 while True:
-                                    time.sleep(waitTime)
-                                    getMessage = clientTelegram.get_messages(LTC, limit=3)
-                                    if 'Forward a message to me from the bot to earn LTC.' in getMessage[0].message:
+                                    try:
                                         time.sleep(waitTime)
+                                        getMessage = clientTelegram.get_messages(LTC, limit=3)
+                                        if 'Forward a message to me from the bot to earn LTC.' in getMessage[0].message:
+                                            time.sleep(waitTime)
+                                            buttons = getMessage[0].reply_markup.rows[1].buttons[1].data
+                                            messageId = getMessage[0].id
+                                            time.sleep(waitTime)
+                                            clientTelegram(GetBotCallbackAnswerRequest(LTC, messageId, data=buttons))
+                                            break
+                                    except AttributeError:
+                                        clientTelegram.send_message(LTC, '/bots')
+                                        time.sleep(waitTime)
+                                break
+                            counter = 0
+                            while True:
+                                try:
+                                    time.sleep(waitTime)
+                                    getMessage = clientTelegram.get_messages(botTitle, limit=3)
+                                    if counter == 20:
+                                        print(f'[{datetime.datetime.now().strftime("%H:%M:%S")}] '
+                                              f'Превышено время ожидания ответа от бота {botName}.')
+                                        print(
+                                        '================================================================================')
+                                        db.cursor.execute(f'INSERT INTO bot_blacklist (URL) VALUES ("{tgLink}")')
+                                        db.connection.commit()
+                                        time.sleep(waitTime)
+                                        clientTelegram.delete_dialog(botTitle)
+                                        getMessage = clientTelegram.get_messages(LTC, limit=3)
                                         buttons = getMessage[0].reply_markup.rows[1].buttons[1].data
                                         messageId = getMessage[0].id
                                         time.sleep(waitTime)
                                         clientTelegram(GetBotCallbackAnswerRequest(LTC, messageId, data=buttons))
                                         break
-                                break
-                            counter = 0
-                            while True:
-                                time.sleep(waitTime)
-                                getMessage = clientTelegram.get_messages(botTitle, limit=3)
-                                if counter == 20:
-                                    print(f'[{datetime.datetime.now().strftime("%H:%M:%S")}] '
-                                          f'Превышено время ожидания ответа от бота {botName}.')
-                                    print(
-                                    '================================================================================')
-                                    db.cursor.execute(f'INSERT INTO bot_blacklist (URL) VALUES ("{tgLink}")')
-                                    db.connection.commit()
+                                    elif accountId not in str(getMessage[0].from_id):
+                                        time.sleep(waitTime)
+                                        messageId = getMessage[0].id
+                                        time.sleep(waitTime)
+                                        clientTelegram.forward_messages(LTC, messageId, botTitle)
+                                        time.sleep(waitTime)
+                                        clientTelegram.delete_dialog(botTitle)
+                                        print(f'[{datetime.datetime.now().strftime("%H:%M:%S")}] '
+                                              f'Получили награду на аккаутне {phoneNumber} за запуск бота.')
+                                        print(
+                                        '================================================================================')
+                                        y = 0
+                                        break
+                                    counter += 2
                                     time.sleep(waitTime)
-                                    clientTelegram.delete_dialog(botTitle)
-                                    getMessage = clientTelegram.get_messages(LTC, limit=3)
-                                    buttons = getMessage[0].reply_markup.rows[1].buttons[1].data
-                                    messageId = getMessage[0].id
+                                except AttributeError:
+                                    clientTelegram.send_message(LTC, '/bots')
                                     time.sleep(waitTime)
-                                    clientTelegram(GetBotCallbackAnswerRequest(LTC, messageId, data=buttons))
-                                    break
-                                elif accountId not in str(getMessage[0].from_id):
-                                    time.sleep(waitTime)
-                                    messageId = getMessage[0].id
-                                    time.sleep(waitTime)
-                                    clientTelegram.forward_messages(LTC, messageId, botTitle)
-                                    time.sleep(waitTime)
-                                    clientTelegram.delete_dialog(botTitle)
-                                    print(f'[{datetime.datetime.now().strftime("%H:%M:%S")}] '
-                                          f'Получили награду на аккаутне {phoneNumber} за запуск бота.')
-                                    print(
-                                    '================================================================================')
-                                    x += 1
-                                    y = 0
-                                    break
-                                counter += 1
-                                time.sleep(waitTime)
                             break
             except UserDeactivatedBanError:
                 print(f'[{datetime.datetime.now().strftime("%H:%M:%S")}] '
@@ -434,19 +458,17 @@ class LitecoinBot:
                 logging.error('================================================================================')
                 db.cursor.execute(f'DELETE FROM account_information WHERE PHONE_NUMBER = {phoneNumber}')
                 db.connection.commit()
+        print(f'[{datetime.datetime.now().strftime("%H:%M:%S")}] Запуск ботов - круг пройден.')
+        print('================================================================================')
 
     @staticmethod
     def JoinChannel():
-        x, y = 1, 0
-        while True:
-            try:
-                phoneNumber = db.selectAccount(x)[1]; apiId = db.selectAccount(x)[2]
-                apiHash = db.selectAccount(x)[3]; stringSession = db.selectAccount(x)[4]
-                accountId = db.selectAccount(x)[5]
-            except:
-                print(f'[{datetime.datetime.now().strftime("%H:%M:%S")}] Подписка на каналы - круг пройден.')
-                print('================================================================================')
-                break
+        y = 0
+        for accountInformation in db.cursor.execute(
+                f'SELECT PHONE_NUMBER, API_ID, API_HASH, STRING_SESSION, ACCOUNT_ID FROM account_information').fetchall():
+            phoneNumber = accountInformation[0];apiId = accountInformation[1]
+            apiHash = accountInformation[2]; stringSession = accountInformation[3]
+            accountId = accountInformation[4]
             clientTelegram = TelegramClient(StringSession(stringSession), apiId, apiHash)
             clientTelegram.connect()
             if y == 0:
@@ -454,6 +476,7 @@ class LitecoinBot:
                       f'Аккаунт {phoneNumber} в работе. Функция: подписка на каналы.')
                 print('================================================================================')
             y = 1
+            x = 1
             try:
                 for dialogs in clientTelegram.get_dialogs():
                     if dialogs.title == 'LTC Click Bot':
@@ -461,11 +484,9 @@ class LitecoinBot:
                         break
                 try:
                     clientTelegram.send_message(LTC, '/join')
-                except PeerIdInvalidError:
-                    print(
-                        f'[{datetime.datetime.now().strftime("%H:%M:%S")}] '
-                        f'@Litecoin_click_bot на запущен на аккаунте {phoneNumber}. '
-                        f'Выполните комманду ./startLtcBot')
+                except UnboundLocalError:
+                    print(f'[{datetime.datetime.now().strftime("%H:%M:%S")}] Проверьте, выполнили ли вы комманду'
+                          f'./startLtcBot')
                     break
                 while True:
                     time.sleep(waitTime)
@@ -476,9 +497,17 @@ class LitecoinBot:
                         print( f'[{datetime.datetime.now().strftime("%H:%M:%S")}] '
                                f'Для аккаунта {phoneNumber} нет доступных заданий. Переходим на другой аккаунт.')
                         print('================================================================================')
-                        x += 1
                         y = 0
                         break
+                    elif 'There is a new site for you to /visit! 🖥' in getMessage[0].message:
+                        time.sleep(waitTime)
+                        clientTelegram.send_message(LTC, '/join')
+                    elif 'In the past hour, you earned' in getMessage[0].message:
+                        time.sleep(waitTime)
+                        clientTelegram.send_message(LTC, '/join')
+                    elif 'There is a new /bot for you to message! 🤖' in getMessage[0].message:
+                        time.sleep(waitTime)
+                        clientTelegram.send_message(LTC, '/join')
                     elif 'Sorry, that task is no longer valid' in getMessage[0].message:
                         time.sleep(waitTime)
                         clientTelegram.send_message(LTC, '/join')
@@ -488,105 +517,169 @@ class LitecoinBot:
                         url = getMessage[0].reply_markup.rows[0].buttons[0].url
                         requestsGet = requests.get(url)
                         beautifulSoup = bs4.BeautifulSoup(requestsGet.text, 'lxml')
-                        findChannelName = beautifulSoup.find('title').get_text(strip=True)
-                        findChannelTitle = beautifulSoup.find(class_="tgme_page_title").get_text(strip=True)
-                        channelName = findChannelName.replace('Telegram: Contact ', '')
                         try:
+                            findChannelName = beautifulSoup.find('title').get_text(strip=True)
+                            findChannelTitle = beautifulSoup.find(class_="tgme_page_title").get_text(strip=True)
+                            channelName = findChannelName.replace('Telegram: Contact ', '')
+                        except AttributeError:
+                            clientTelegram.send_message(LTC, '/join')
                             time.sleep(waitTime)
-                            clientTelegram(JoinChannelRequest(channelName))
-                        except FloodWaitError:
-                            print(f'[{datetime.datetime.now().strftime("%H:%M:%S")}] '
-                                  f'Аккаунт {phoneNumber} временно заблокирован за флуд.')
-                            print('================================================================================')
-                            logging.error(
-                                f'[{datetime.datetime.now().strftime("%H:%M:%S")}] '
-                                f'Аккаунт {phoneNumber} временно заблокирован за флуд.')
-                            logging.error(
-                                 '================================================================================')
-                            x +=1
-                            break
-                        except:
-                            print(f'[{datetime.datetime.now().strftime("%H:%M:%S")}] '
-                                  f'Канала {channelName} не существует. Пропускаем задание.')
-                            print('================================================================================')
                             while True:
-                                time.sleep(waitTime)
-                                getMessage = clientTelegram.get_messages(LTC, limit=3)
-                                if accountId not in str(getMessage[0].from_id):
-                                    time.sleep(waitTime)
-                                    buttons = getMessage[0].reply_markup.rows[1].buttons[1].data
-                                    messageId = getMessage[0].id
-                                    clientTelegram(GetBotCallbackAnswerRequest(LTC, messageId, data=buttons))
-                                    break
-                                break
-                        while True:
-                            time.sleep(waitTime)
-                            getMessage = clientTelegram.get_messages(LTC, limit=3)
-                            if 'Press the "Go to channel" button below' or \
-                                    'Press the "Go to group" button below' in \
-                                    getMessage[0].message or getMessage[1].message:
-                                time.sleep(waitTime)
-                                buttons = getMessage[0].reply_markup.rows[0].buttons[1].data
-                                messageId = getMessage[0].id
-                                clientTelegram(GetBotCallbackAnswerRequest(LTC, messageId, data=buttons))
-                                while True:
+                                try:
                                     time.sleep(waitTime)
                                     getMessage = clientTelegram.get_messages(LTC, limit=3)
-                                    if 'Success' in getMessage[1].message:
+                                    if 'Press the "Go to channel" button below' in getMessage[0].message or \
+                            'Press the "Go to group" button' in getMessage[0].message:
+                                        buttons = getMessage[0].reply_markup.rows[1].buttons[1].data
+                                        messageId = getMessage[0].id
+                                        clientTelegram(GetBotCallbackAnswerRequest(LTC, messageId, data=buttons))
                                         time.sleep(waitTime)
-                                        print(f'[{datetime.datetime.now().strftime("%H:%M:%S")}] '
-                                              f'На аккаунте {phoneNumber} успешно выполнено задание по '
-                                            f'подписке на канал {channelName}.')
-                                        print(
-                                    '================================================================================')
-                                        for dialogs in clientTelegram.get_dialogs():
-                                            if dialogs.title == findChannelTitle or dialogs.entity.username == findChannelName:
-                                                channelId = dialogs.id
-                                        copyMessage = getMessage[1].message; searchPattern = re.compile(r'\d{1,2}')
-                                        findTime = searchPattern.search(copyMessage)
-                                        time_ = findTime.group()
-                                        timeJoin = datetime.datetime.now()
-                                        timeDelta = datetime.timedelta(hours=int(time_))
-                                        timeLeave = timeJoin + timeDelta
-                                        db.cursor.execute(f'''INSERT INTO channel_info 
-                                                            (CHANNEL_ID, TIME_LEAVE, ACCOUNT_ID)
-                                                            VALUES (?, ?, ?)''', (channelId, timeLeave, accountId))
-                                        db.connection.commit()
-                                        x += 1
-                                        y = 0
                                         break
-                                    elif 'If this message persists' in getMessage[0].message:
+                                except AttributeError:
+                                    clientTelegram.send_message(LTC, '/join')
+                                    time.sleep(waitTime)
+                        else:
+                            try:
+                                time.sleep(waitTime)
+                                clientTelegram(JoinChannelRequest(channelName))
+                            except FloodWaitError:
+                                print(f'[{datetime.datetime.now().strftime("%H:%M:%S")}] '
+                                      f'Аккаунт {phoneNumber} временно заблокирован за флуд.')
+                                print('================================================================================')
+                                logging.error(
+                                    f'[{datetime.datetime.now().strftime("%H:%M:%S")}] '
+                                    f'Аккаунт {phoneNumber} временно заблокирован за флуд.')
+                                logging.error(
+                                     '================================================================================')
+                                break
+                            except:
+                                print(f'[{datetime.datetime.now().strftime("%H:%M:%S")}] '
+                                      f'Канала {channelName} не существует. Пропускаем задание.')
+                                print('================================================================================')
+                                while True:
+                                    try:
                                         time.sleep(waitTime)
-                                        clientTelegram(LeaveChannelRequest(channelName))
-                                        time.sleep(waitTime)
+                                        getMessage = clientTelegram.get_messages(LTC, limit=3)
+                                        if accountId not in str(getMessage[0].from_id):
+                                            time.sleep(waitTime)
+                                            buttons = getMessage[0].reply_markup.rows[1].buttons[1].data
+                                            messageId = getMessage[0].id
+                                            clientTelegram(GetBotCallbackAnswerRequest(LTC, messageId, data=buttons))
+                                            time.sleep(waitTime)
+                                            break
+                                    except AttributeError:
                                         clientTelegram.send_message(LTC, '/join')
+                                        time.sleep(waitTime)
+                                    break
+                            while True:
+                                time.sleep(waitTime)
+                                try:
+                                    getMessage = clientTelegram.get_messages(LTC, limit=3)
+                                    if 'Press the "Go to channel" button below' or \
+                                            'Press the "Go to group" button below' in \
+                                            getMessage[0].message or getMessage[1].message:
+                                        time.sleep(waitTime)
+                                        buttons = getMessage[0].reply_markup.rows[0].buttons[1].data
+                                        messageId = getMessage[0].id
+                                        clientTelegram(GetBotCallbackAnswerRequest(LTC, messageId, data=buttons))
                                         while True:
                                             time.sleep(waitTime)
                                             getMessage = clientTelegram.get_messages(LTC, limit=3)
-                                            if 'After joining, press the "Joined" button to earn LTC.' in \
-                                                    getMessage[0].message:
+                                            if 'Success' in getMessage[1].message:
                                                 time.sleep(waitTime)
-                                                buttons = getMessage[0].reply_markup.rows[1].buttons[1].data
-                                                messageId = getMessage[0].id
-                                                time.sleep(waitTime)
-                                                clientTelegram(
-                                                    GetBotCallbackAnswerRequest(LTC, messageId, data=buttons))
+                                                for dialogs in clientTelegram.get_dialogs():
+                                                    if dialogs.title == findChannelTitle:
+                                                        channelId = dialogs.id
+                                                        break
+                                                copyMessage = getMessage[1].message; searchPattern = re.compile(r'\d{1,2}')
+                                                findTime = searchPattern.search(copyMessage)
+                                                time_ = findTime.group()
+                                                timeJoin = datetime.datetime.now()
+                                                timeDelta = datetime.timedelta(hours=int(time_))
+                                                timeLeave = timeJoin + timeDelta
+                                                db.cursor.execute(f'''INSERT INTO channel_info 
+                                                                    (CHANNEL_ID, TIME_LEAVE, ACCOUNT_ID)
+                                                                    VALUES (?, ?, ?)''', (channelId, timeLeave, accountId))
+                                                db.connection.commit()
+                                                print(f'[{datetime.datetime.now().strftime("%H:%M:%S")}] '
+                                                      f'На аккаунте {phoneNumber} успешно выполнено задание по '
+                                                      f'подписке на канал {channelName}.')
+                                                print(
+                                                    '================================================================================')
+                                                y = 0
+                                                x = 0
                                                 break
+                                            elif 'If this message persists' in getMessage[0].message:
+                                                time.sleep(waitTime)
+                                                clientTelegram(LeaveChannelRequest(channelName))
+                                                time.sleep(waitTime)
+                                                clientTelegram.send_message(LTC, '/join')
+                                                while True:
+                                                    try:
+                                                        time.sleep(waitTime)
+                                                        getMessage = clientTelegram.get_messages(LTC, limit=3)
+                                                        if 'After joining, press the "Joined" button to earn LTC.' in \
+                                                                getMessage[0].message:
+                                                            time.sleep(waitTime)
+                                                            buttons = getMessage[0].reply_markup.rows[1].buttons[1].data
+                                                            messageId = getMessage[0].id
+                                                            time.sleep(waitTime)
+                                                            clientTelegram(
+                                                                GetBotCallbackAnswerRequest(LTC, messageId, data=buttons))
+                                                            break
+                                                    except AttributeError:
+                                                        clientTelegram.send_message(LTC, '/join')
+                                                        time.sleep(waitTime)
+                                                break
+                                            elif 'Please press the "🔎 Go to channel" button' in getMessage[0].message:
+                                                time.sleep(waitTime)
+                                                clientTelegram.send_message(LTC, '/join')
+                                                break
+                                            elif 'Sorry, that task is no longer valid. 😟' in getMessage[0].message:
+                                                time.sleep(waitTime)
+                                                for dialogs in clientTelegram.iter_dialogs():
+                                                    if str(channelId) in str(dialogs.id):
+                                                        dialogs.delete()
+                                                        break
+                                                time.sleep(waitTime)
+                                                clientTelegram.send_message(LTC, '/join')
+                                                break
+                                            elif 'There is a new site for you to /visit! 🖥' in getMessage[0].message:
+                                                time.sleep(waitTime)
+                                                clientTelegram.send_message(LTC, '/join')
+                                                break
+                                            elif 'In the past hour, you earned' in getMessage[0].message:
+                                                time.sleep(waitTime)
+                                                clientTelegram.send_message(LTC, '/join')
+                                                break
+                                            elif 'There is a new /bot for you to message! 🤖' in getMessage[0].message:
+                                                time.sleep(waitTime)
+                                                clientTelegram.send_message(LTC, '/join')
+                                                break
+                                            elif 'Sorry, that task is no longer valid' in getMessage[0].message:
+                                                time.sleep(waitTime)
+                                                clientTelegram.send_message(LTC, '/join')
+                                                break
+                                            else:
+                                                pass
                                         break
-                                    elif 'Please press the "🔎 Go to channel" button' in getMessage[0].message:
+                                    elif 'There is a new site for you to /visit! 🖥' in getMessage[0].message:
                                         time.sleep(waitTime)
                                         clientTelegram.send_message(LTC, '/join')
-                                        break
-                                    elif 'Sorry, that task is no longer valid. 😟' in getMessage[0].message:
-                                        time.sleep(waitTime)
-                                        clientTelegram(LeaveChannelRequest(channelName))
+                                    elif 'In the past hour, you earned' in getMessage[0].message:
                                         time.sleep(waitTime)
                                         clientTelegram.send_message(LTC, '/join')
-                                        break
-                                    else:
-                                        pass
+                                    elif 'There is a new /bot for you to message! 🤖' in getMessage[0].message:
+                                        time.sleep(waitTime)
+                                        clientTelegram.send_message(LTC, '/join')
+                                    elif 'Sorry, that task is no longer valid' in getMessage[0].message:
+                                        time.sleep(waitTime)
+                                        clientTelegram.send_message(LTC, '/join')
+                                except AttributeError:
+                                    clientTelegram.send_message(LTC, '/join')
+                                    time.sleep(waitTime)
+                            if x == 0:
                                 break
-                        break
             except UserDeactivatedBanError:
                 print(f'[{datetime.datetime.now().strftime("%H:%M:%S")}] '
                       f'ВНИМАНИЕ! Аккаунт {phoneNumber} забанен. Удаляем данные об аккаунте из базы.\n'
@@ -596,7 +689,8 @@ class LitecoinBot:
                 logging.error('================================================================================')
                 db.cursor.execute(f'DELETE FROM account_information WHERE PHONE_NUMBER = {phoneNumber}')
                 db.connection.commit()
-                x += 1
+        print(f'[{datetime.datetime.now().strftime("%H:%M:%S")}] Подписка на каналы - круг пройден.')
+        print('================================================================================')
 
     @staticmethod
     def TimeToExit():
@@ -666,11 +760,9 @@ class LitecoinBot:
                         break
                 try:
                     clientTelegram.send_message(LTC, '/balance')
-                except PeerIdInvalidError:
-                    print(
-                        f'[{datetime.datetime.now().strftime("%H:%M:%S")}] '
-                        f'@Litecoin_click_bot на запущен на аккаунте {phoneNumber}. '
-                        f'Выполните комманду ./startLtcBot')
+                except UnboundLocalError:
+                    print(f'[{datetime.datetime.now().strftime("%H:%M:%S")}] Проверьте, выполнили ли вы комманду'
+                          f'./startLtcBot')
                     break
                 while True:
                     time.sleep(1)
@@ -716,7 +808,12 @@ class LitecoinBot:
                     if dialogs.title == 'LTC Click Bot':
                         LTC = dialogs
                         break
-                clientTelegram.send_message(LTC, '/balance')
+                try:
+                    clientTelegram.send_message(LTC, '/balance')
+                except UnboundLocalError:
+                    print(f'[{datetime.datetime.now().strftime("%H:%M:%S")}] Проверьте, выполнили ли вы комманду'
+                          f'./startLtcBot')
+                    break
                 while True:
                     getMessage = clientTelegram.get_messages(LTC, limit=3)
                     if 'Available balance' in getMessage[0].message:
@@ -764,9 +861,6 @@ class LitecoinBot:
                 print(f'@Litecoin_click_bot на запущен на аккаунте {phoneNumber}. '
                       f'Выполните комманду ./startLtcBot')
                 break
-
-
-
 
 
 
