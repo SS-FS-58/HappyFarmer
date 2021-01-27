@@ -582,15 +582,15 @@ class LitecoinBot:
                                         buttons = getMessage[0].reply_markup.rows[0].buttons[1].data
                                         messageId = getMessage[0].id
                                         clientTelegram(GetBotCallbackAnswerRequest(LTC, messageId, data=buttons))
+                                        for dialogs in clientTelegram.get_dialogs():
+                                            if dialogs.title == findChannelTitle:
+                                                channelId = dialogs.id
+                                                break
                                         while True:
                                             time.sleep(waitTime)
                                             getMessage = clientTelegram.get_messages(LTC, limit=3)
                                             if 'Success' in getMessage[1].message:
                                                 time.sleep(waitTime)
-                                                for dialogs in clientTelegram.get_dialogs():
-                                                    if dialogs.title == findChannelTitle:
-                                                        channelId = dialogs.id
-                                                        break
                                                 copyMessage = getMessage[1].message; searchPattern = re.compile(r'\d{1,2}')
                                                 findTime = searchPattern.search(copyMessage)
                                                 time_ = findTime.group()
@@ -861,6 +861,8 @@ class LitecoinBot:
                 print(f'@Litecoin_click_bot на запущен на аккаунте {phoneNumber}. '
                       f'Выполните комманду ./startLtcBot')
                 break
+
+
 
 
 
