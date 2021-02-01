@@ -15,14 +15,6 @@
 
 ```Шаг 3.```  
 Установка PIP (python installer package). Инструкция по установке PIP: https://pythonru.com/baza-znanij/ustanovka-pip-dlja-python-i-bazovye-komandy  
-После установки PIP, в консоль Windows необходимо прописать комманды:
-```pip install telethon```      
-```pip install requests```      
-```pip install selenium```    
-```pip install pycoingecko```   
-```pip install beautifulsoup4```      
-```pip3 install bs4```      
-```pip3 install lxml```    
 
 ---
 
@@ -67,8 +59,9 @@
 
 Для запуска работы обязательно нужно выполнить следующие комманды (в указанной последовательности):  
 
-1. ```./addData```  
-2. ```./addRefCodeAndApiKey```
-3. ```./createSession```
+1. ```./installPackage```  
+2. ```./addData```  
+3. ```./addRefCodeAndApiKey```
+4. ```./createSession```
 
 После выполнения вышеуказанных комманд, можно запускать ферму ```./startFarming```
