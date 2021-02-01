@@ -273,11 +273,14 @@ def VisitSites():
                             break
                     elif 'In the past hour, you earned' in getMessage[0].message:
                         time.sleep(1)
-                        clientTelegram.send_message(Ltc, '/join')
+                        clientTelegram.send_message(Ltc, '/visit')
                     elif 'There is a new /bot for you to message! 🤖' in getMessage[0].message:
                         time.sleep(1)
-                        clientTelegram.send_message(Ltc, '/join')
+                        clientTelegram.send_message(Ltc, '/visit')
                     elif 'New chat to /join' in getMessage[0].message:
+                        time.sleep(1)
+                        clientTelegram.send_message(Ltc, '/visit')
+                    elif 'There is a new site for you to /visit! 🖥' in getMessage[0].message:
                         time.sleep(1)
                         clientTelegram.send_message(Ltc, '/visit')
         except UserDeactivatedBanError:
@@ -365,6 +368,9 @@ def JoinChannel():
                         time.sleep(1)
                         clientTelegram.send_message(Ltc, '/join')
                     elif 'Sorry, that task is no longer valid' in getMessage[0].message:
+                        time.sleep(1)
+                        clientTelegram.send_message(Ltc, '/join')
+                    elif 'New chat to /join' in getMessage[0].message:
                         time.sleep(1)
                         clientTelegram.send_message(Ltc, '/join')
                     elif 'Press the "Go to channel" button below' in getMessage[0].message or \
@@ -525,6 +531,10 @@ def JoinChannel():
                                                 time.sleep(1)
                                                 clientTelegram.send_message(Ltc, '/join')
                                                 break
+                                            elif 'New chat to /join' in getMessage[0].message:
+                                                time.sleep(1)
+                                                clientTelegram.send_message(Ltc, '/join')
+                                                break
                                         break
                                     elif 'There is a new site for you to /visit! 🖥' in getMessage[0].message:
                                         time.sleep(1)
@@ -536,6 +546,9 @@ def JoinChannel():
                                         time.sleep(1)
                                         clientTelegram.send_message(Ltc, '/join')
                                     elif 'Sorry, that task is no longer valid' in getMessage[0].message:
+                                        time.sleep(1)
+                                        clientTelegram.send_message(Ltc, '/join')
+                                    elif 'New chat to /join' in getMessage[0].message:
                                         time.sleep(1)
                                         clientTelegram.send_message(Ltc, '/join')
                                 except AttributeError:
@@ -784,6 +797,9 @@ def StartBot():
                     elif 'new chat to /join' in getMessage[0].message:
                         time.sleep(1)
                         clientTelegram.send_message(Ltc, '/bots')
+                    elif 'There is a new /bot for you to message! 🤖' in getMessage[0].message:
+                        time.sleep(1)
+                        clientTelegram.send_message(Ltc, '/bots')
             except UserDeactivatedBanError:
                 print('[{0}] ВНИМАНИЕ! Аккаунт {1} забанен. Удаляем данные об аккаунте из базы.\n'.format(
                     datetime.datetime.now().strftime("%H:%M:%S"), accountInformation[0]))
@@ -1013,9 +1029,6 @@ def WithdrawBalance():
                 '==========================================='
                 '============================================')
             clientTelegram.disconnect()
-
-
-
 
 
 
