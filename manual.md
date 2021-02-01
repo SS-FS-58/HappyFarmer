@@ -27,13 +27,13 @@
 
 ```Шаг 5.```  
 Указание пути до интерпретатора Python.  
-Открываете с помощью блокнота скачанные ранее файлы start.py, main.py, func.py В самом верху каждого файла увидите строку #!C:\Users\Misha\AppData\Local\Programs\Python\Python39\python.exe Удаляете всё до #! и указываете свой путь до python.exe (до интерпретатора)
+Открываете с помощью блокнота откройте скачанный ранее файл start.py В самом верху каждого файла увидите строку #!C:\Users\Misha\AppData\Local\Programs\Python\Python39\python.exe Удаляете всё до #! и указываете свой путь до python.exe (до интерпретатора)
 
 ---
 
 ```Шаг 6.```  
 Указание пути до ChromeDriver.  
-Открываете файл func.py, ищете строку browserChrome = webdriver.Chrome(r'C:\Users\Misha\Desktop\bot_v2\chromedriver.exe',options=chromeOptions). Вместо C:\Users\Misha\Desktop\bot_v2\chromedriver.exe указываете свой путь до ChromeDriver.exe
+Открываете c помощью блокнтоа файл allfoo.py, ищете строку ```chromeDriverPath =r'C:\Users\Misha\Desktop\bot_v2\chromedriver.exe'``` Вместо C:\Users\Misha\Desktop\bot_v2\chromedriver.exe указываете свой путь до ChromeDriver.exe
 
 ---
 
