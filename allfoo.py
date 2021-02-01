@@ -32,8 +32,8 @@ logging.getLogger('selenium').setLevel('CRITICAL')
 def InstallPackage():
     print('\n[{0}] Функция установки пакетов активирована.\n'.format(
         datetime.datetime.now().strftime("%H:%M:%S")))
-    packages = numpy.array(['telethon', 'pycoingecko', 'beautifulsoup4',
-                            'lxml', 'selenium', 'requests', 'numpy'], dtype=str)
+    packages = ['telethon', 'pycoingecko', 'beautifulsoup4',
+                            'lxml', 'selenium', 'requests', 'numpy']
     for package in packages:
         subprocess.call([sys.executable, "-m", "pip", "install", package])
 
