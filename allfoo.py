@@ -33,7 +33,7 @@ def InstallPackage():
     print('\n[{0}] Функция установки пакетов активирована.\n'.format(
         datetime.datetime.now().strftime("%H:%M:%S")))
     packages = numpy.array(['telethon', 'pycoingecko', 'beautifulsoup4',
-                            'lxml', 'selenium', 'requests'], dtype=str)
+                            'lxml', 'selenium', 'requests', 'numpy'], dtype=str)
     for package in packages:
         subprocess.call([sys.executable, "-m", "pip", "install", package])
 
