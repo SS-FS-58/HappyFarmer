@@ -1,8 +1,18 @@
 # coding: utf8
 
+import sys
+import subprocess
+
+def InstallPackage():
+    print('\n[{0}] Функция установки пакетов активирована.\n'.format(
+        datetime.datetime.now().strftime("%H:%M:%S")))
+    packages = ['telethon', 'pycoingecko', 'beautifulsoup4',
+                            'lxml', 'selenium', 'requests', 'numpy']
+    for package in packages:
+        subprocess.call([sys.executable, "-m", "pip", "install", package])
+
 import bs4
 import re
-import sys
 import time
 import numpy
 import json
@@ -10,7 +20,6 @@ import datetime
 import telethon
 import logging
 import requests
-import subprocess
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from telethon.sessions import StringSession
@@ -28,14 +37,6 @@ logging.basicConfig(filename="TelegramFarmErrors.log", level=logging.ERROR)
 logging.getLogger('urllib3').setLevel('CRITICAL')
 logging.getLogger('telethon').setLevel('CRITICAL')
 logging.getLogger('selenium').setLevel('CRITICAL')
-
-def InstallPackage():
-    print('\n[{0}] Функция установки пакетов активирована.\n'.format(
-        datetime.datetime.now().strftime("%H:%M:%S")))
-    packages = ['telethon', 'pycoingecko', 'beautifulsoup4',
-                            'lxml', 'selenium', 'requests', 'numpy']
-    for package in packages:
-        subprocess.call([sys.executable, "-m", "pip", "install", package])
 
 def CreateSession():
     stop = False
@@ -1029,6 +1030,4 @@ def WithdrawBalance():
                 '==========================================='
                 '============================================')
             clientTelegram.disconnect()
-
-
 
