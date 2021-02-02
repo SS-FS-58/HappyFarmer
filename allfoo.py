@@ -224,10 +224,24 @@ def VisitSites():
                         break
                     elif 'Press the "Visit website"' in getMessage[0].message:
                         url = getMessage[0].reply_markup.rows[0].buttons[0].url
-                        chromeOptions = Options()
-                        chromeOptions.add_argument('--headless')
-                        chromeOptions.add_experimental_option('excludeSwitches', ['enable-logging'])
-                        browserChrome = webdriver.Chrome('{0}'.format(chromeDriverPath), options=chromeOptions)
+                        try:
+                            chromeOptions = Options()
+                            chromeOptions.add_argument('--headless')
+                            chromeOptions.add_experimental_option('excludeSwitches', ['enable-logging'])
+                            browserChrome = webdriver.Chrome('{0}'.format(chromeDriverPath), options=chromeOptions)
+                        except:
+                            time.sleep(1)
+                            try:
+                                getMessage = clientTelegram.get_messages(Ltc, limit=3)
+                                if 'Press the "Visit website" button to earn LTC' in getMessage[0].message:
+                                    buttons = getMessage[0].reply_markup.rows[1].buttons[1].data
+                                    messageId = getMessage[0].id
+                                    time.sleep(1)
+                                    clientTelegram(GetBotCallbackAnswerRequest(Ltc, messageId, data=buttons))
+                                    break
+                            except:
+                                time.sleep(1)
+                                clientTelegram.send_message(Ltc, '/visit')
                         try:
                             browserChrome.get(url=url)
                         except:
@@ -240,19 +254,18 @@ def VisitSites():
                             browserChrome.quit()
                             time.sleep(1)
                             clientTelegram.send_message(Ltc, '/visit')
-                            while True:
-                                time.sleep(1)
-                                try:
-                                    getMessage = clientTelegram.get_messages(Ltc, limit=3)
-                                    if 'Press the "Visit website" button to earn LTC' in getMessage[0].message:
-                                        buttons = getMessage[0].reply_markup.rows[1].buttons[1].data
-                                        messageId = getMessage[0].id
-                                        time.sleep(1)
-                                        clientTelegram(GetBotCallbackAnswerRequest(Ltc, messageId, data=buttons))
-                                        break
-                                except AttributeError:
+                            time.sleep(1)
+                            try:
+                                getMessage = clientTelegram.get_messages(Ltc, limit=3)
+                                if 'Press the "Visit website" button to earn LTC' in getMessage[0].message:
+                                    buttons = getMessage[0].reply_markup.rows[1].buttons[1].data
+                                    messageId = getMessage[0].id
                                     time.sleep(1)
-                                    clientTelegram.send_message(Ltc, '/visit')
+                                    clientTelegram(GetBotCallbackAnswerRequest(Ltc, messageId, data=buttons))
+                                    break
+                            except AttributeError:
+                                time.sleep(1)
+                                clientTelegram.send_message(Ltc, '/visit')
                             break
                         while True:
                             time.sleep(1)
@@ -954,7 +967,7 @@ def WithdrawBalance():
                                                            'API_ID, '
                                                            'API_HASH, '
                                                            'STRING_SESSION, '
-                                                           'ACCOUNT_ID '
+                                                           'ADDRESS '
                                                            'FROM account_information').fetchall(), dtype=str)
     for accountInformation in accountInformationList:
         try:
@@ -1030,4 +1043,3 @@ def WithdrawBalance():
                 '==========================================='
                 '============================================')
             clientTelegram.disconnect()
-
