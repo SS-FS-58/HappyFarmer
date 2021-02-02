@@ -152,6 +152,8 @@ def StartLitecoinBot():
             db.cursor.execute('DELETE FROM account_information '
                               'WHERE PHONE_NUMBER = {0}'.format(accountInformation[0]))
             db.connection.commit()
+            logging.error('[{0}] ВНИМАНИЕ! Аккаунт {1} забанен. Удаляем данные об аккаунте из базы.'.format(
+                datetime.datetime.now().strftime("%H:%M:%S"), accountInformation[0]))
         except FloodWaitError:
             print('[{0}] ВНИМАНИЕ! Аккаунт {1} временно заблокирован за флуд.'.format(
                 datetime.datetime.now().strftime("%H:%M:%S"), accountInformation[0]))
@@ -165,8 +167,6 @@ def StartLitecoinBot():
             print('[{0}] Аккаунт {1} подписан на @Litecoin_click_bot.'.format(
                 datetime.datetime.now().strftime("%H:%M:%S"), accountInformation[0]))
             clientTelegram.disconnect()
-            logging.error('[{0}] ВНИМАНИЕ! Аккаунт {1} забанен. Удаляем данные об аккаунте из базы.'.format(
-                datetime.datetime.now().strftime("%H:%M:%S"), accountInformation[0]))
 
 def VisitSites():
     print('[{0}] Функция посещения сайтов активирована.'.format(datetime.datetime.now().strftime("%H:%M:%S")))
