@@ -271,7 +271,7 @@ def VisitSites():
                             time.sleep(1)
                             getMessage = clientTelegram.get_messages(Ltc, limit=3)
                             if 'for visiting a site' in getMessage[0].message or getMessage[1].message \
-                                    or getMessage[2].message:
+                                    or getMessage[2].message and accountInformation[4] not in str(getMessage[0].from_id):
                                 browserChrome.close()
                                 browserChrome.quit()
                                 time.sleep(1)
